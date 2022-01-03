@@ -1,6 +1,6 @@
 Package: simplermarkdown
 Title: Simple Engine for Generating Reports using R
-Version: 0.0.3
+Version: 0.0.4
 Authors@R: 
     person(given = "Jan",
            family = "van der Laan",
@@ -23,8 +23,8 @@ VignetteBuilder: simplermarkdown
 SystemRequirements: Pandoc (http://pandoc.org) needs to installed and
         available in the search path.
 NeedsCompilation: no
-Packaged: 2021-10-26 19:27:19 UTC; eoos
+Packaged: 2022-01-03 19:59:17 UTC; eoos
 Author: Jan van der Laan [aut, cre] (<https://orcid.org/0000-0002-0693-1514>)
 Maintainer: Jan van der Laan <r@eoos.dds.nl>
 Repository: CRAN
-Date/Publication: 2021-10-27 12:00:02 UTC
+Date/Publication: 2022-01-03 20:20:02 UTC

@@ -150,10 +150,11 @@ mdweave_to_pdf(example1, &quot;example1.pdf&quot;)</code></pre>
 a &lt;- 1+1
 a
 ```</code></pre>
-<p>By default the code in the code block is run and both the code and the output of the code are shown in the generated new code block. In the resulting output file this wil result in</p>
+<p>By default the code in the code block is run and both the code and the output of the code are shown in the generated new code block. In the output file this will result in</p>
 <div class="sourceCode" id="codeblock1"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="codeblock1-1" title="1"><span class="op">&gt;</span><span class="st"> </span>a &lt;-<span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="codeblock1-2" title="2"><span class="op">&gt;</span><span class="st"> </span>a</a>
-<a class="sourceLine" id="codeblock1-3" title="3">[<span class="dv">1</span>] <span class="dv">2</span></a></code></pre></div>
+<a class="sourceLine" id="codeblock1-2" title="2"></a>
+<a class="sourceLine" id="codeblock1-3" title="3"><span class="op">&gt;</span><span class="st"> </span>a</a>
+<a class="sourceLine" id="codeblock1-4" title="4">[<span class="dv">1</span>] <span class="dv">2</span></a></code></pre></div>
 <p>Note that the <code>.R</code> needs to be the first argument starting with a <code>.</code> for the codeblock. For example <code>```{#codeblock .foo .R foo=bar}</code> won’t be evaluated, while <code>```{#codeblock foo=bar .R .foo}</code> will.</p>
 <p>By default the code in the code block is run and both the code and the output of the code are shown in the generated new code block. Arguments can be used to suppress either showing the code or the output:</p>
 <pre><code>```{#codeblock1 .R echo=FALSE results=TRUE}
@@ -163,19 +164,30 @@ a &lt;- 1+1
 <pre><code>The average value of `Sepal.Width` is `mean(iris$Sepal.Width)`{.R} and 
 that of `Petal.Width` is `mean(iris$Petal.Width)`{.R}.</code></pre>
 <p>The final result of the inline code will always be included as text into the resulting markdown document. In case of code blocks the code is passed on to a function. Depending on the function used this can result in a code blocks with the evaluated code (the default), tables, figures and you can also specify your own functions.</p>
+<h3 id="figures">Figures</h3>
+<p>To generate a figure use the <code>output_figure</code> function. The function will run the code, capture any output on the specified device and generate a markdown image include.</p>
+<pre><code>```{.R #myfigure fun=output_figure name=&quot;test&quot; caption=&quot;My figure&quot; 
+  device=&quot;pdf&quot; width=8 height=6}
+plot(dta$Sepal.Width, dta$Petal.Width)
+```</code></pre>
+<p><code>output_figure</code> accepts the options <code>caption</code> (default none), <code>device</code> (possible values are <code>&quot;png&quot;</code> and <code>&quot;pdf&quot;</code>), <code>echo</code> (default <code>FALSE</code>; echo the commands to the output) and <code>results</code> (default <code>FALSE</code>; show output of the command (other than the figure) in the output). Additional arguments such as <code>width</code> and <code>height</code> are passed on to the device (in this case <code>pdf()</code>). When an id is given for the code block (as <code>#myfigure</code> above) this is also added to the figure.</p>
+<p>The figures are saved in the folder <code>figures</code> in the current folder. This can be controlled by the <code>dir</code> argument.</p>
 <h3 id="tables">Tables</h3>
 <p>To generate a table, we tell it to pass the code in the code block to the function <code>output_table</code> from the <code>simplermarkdown</code> package. This function will take the final result and generate a markdown table from that. Any additional arguments of the code block are passed on to the <code>output_table</code> function.</p>
-<pre><code>```{.R fun=output_table caption=&quot;Sample iris&quot;}
+<pre><code>```{.R #mytable fun=output_table caption=&quot;Sample iris&quot;}
 dta$foo &lt;- dta$Sepal.Width/dta$Sepal.Length
 dta[1:20, ]
 ```</code></pre>
-<h3 id="figures">Figures</h3>
-<p>To generate a figure use the <code>output_figure</code> function. The function will run the code, capture any output on the specified device and generate a markdown image include.</p>
-<pre><code>```{.R fun=output_figure name=&quot;test&quot; caption=&quot;My figure&quot; device=&quot;pdf&quot; width=8 
-  height=6}
-plot(dta$Sepal.Width, dta$Petal.Width)
+<p><code>output_table</code> only accepts the <code>caption</code> argument. Unfortunately, pandoc does not yet support adding id’s to tables at the moment without the <a href="https://github.com/lierdakil/pandoc-crossref">pandoc crossref filter</a>. Therefore, simplermarkdown also doesn’t add the id to the resulting table as this would interfere with regular pandoc use. Should you want to add an id to the table in order to use it with the crossref filter: you can either do</p>
+<pre><code>: Sample iris {#mytable}
+
+```{.R fun=output_table}
+iris[1:5, ]
 ```</code></pre>
-<p>The figures are saved in the folder <code>figures</code> in the current folder.</p>
+<p>or</p>
+<pre><code>```{.R fun=output_table caption=&quot;Sample iris {#mytable}&quot;}
+iris[1:5, ]
+```</code></pre>
 <h3 id="other-output">Other output</h3>
 <p>By using the <code>output_raw</code> filter, any other output can be generated. This function will run the code, capture any output and put that directly into the resulting markdown document. For example, let’s print a list with all of the iris species:</p>
 <pre><code>```{.R fun=output_raw}
@@ -215,7 +227,7 @@ title: [The title of the vignette]
 
 [And the contents of your vignette]</code></pre>
 <h3 id="custom-styling">Custom styling</h3>
-<p>By default the default templates and styling of the pandoc installation on your machine will be used. However, you can also specify custom styling in the header of your markdown file. See the <a href="https://pandoc.org/MANUAL.html">documentation of Pandoc</a> for more information. For example, if you generate HTML output and you want to use a curstom CSS-stylesheet, you can place the stylesheet in the <code>vignettes</code> directory and refer to the stylesheet in the header:</p>
+<p>By default the default templates and styling of the pandoc installation on your machine will be used. However, you can also specify custom styling in the header of your markdown file. See the <a href="https://pandoc.org/MANUAL.html">documentation of Pandoc</a> for more information. For example, if you generate HTML output and you want to use a custom CSS-stylesheet, you can place the stylesheet in the <code>vignettes</code> directory and refer to the stylesheet in the header:</p>
 <pre><code>&lt;!--
 %\VignetteEngine{simplermarkdown::mdweave_to_html}
 %\VignetteIndexEntry{The title of the vignette}
@@ -226,7 +238,7 @@ title: [The title of the vignette]
 css: custom_styling.css
 ---</code></pre>
 <h2 id="a-note-about-paths-and-working-directories">A note about paths and working directories</h2>
-<p>simplermarkdown tries to assume as little as possible about possible workflows. However, this also means that you, the user, are responsible for some things where other packages might make assumtions. One of the places where this is the case is for paths and working directories. And this is especially relevant when including figures and when generating figures using R.</p>
+<p>simplermarkdown tries to assume as little as possible about possible workflows. However, this also means that you, the user, are responsible for some things where other packages might make assumpptions. One of the places where this is the case is for paths and working directories. And this is especially relevant when including figures and when generating figures using R.</p>
 <p>As an example take the following project directory:</p>
 <pre><code>report/
    report.md
@@ -239,7 +251,7 @@ report/output/</code></pre>
 ```{.R fun=output_figure name=&quot;figure2&quot; caption=&quot;Caption&quot;, device=&quot;png&quot;}
 plot(1:10)
 ```</code></pre>
-<p>Assume the current working directory is the root of the project directory. and that we run <code>mdweave</code> as:</p>
+<p>Assume the current working directory is the root of the project directory and that we run <code>mdweave</code> as:</p>
 <pre><code>mdweave(&quot;report/report.md&quot;, &quot;report/output/report.md&quot;)</code></pre>
 <p>Figures are by default created in the directory <code>figures</code> in the target directory. Therefore the directory structure after running <code>mdweave</code> is:</p>
 <pre><code>report/
@@ -259,7 +271,7 @@ plot(1:10)
 <p><code>pandoc</code> will not be able to find the first figure. It will find the second figure. When you would run the final <code>pandoc</code> command from the <code>report/output</code> directory. <code>pandoc</code> will not be able to find any of the figures.</p>
 <p>There are several possible solutions for the example above:</p>
 <ul>
-<li>When working on linux of mac, you could create a symbolic link from <code>report/output/figures</code> to <code>report/figures</code>.</li>
+<li>When working on linux or mac, you could create a symbolic link from <code>report/output/figures</code> to <code>report/figures</code>.</li>
 <li>Copy <code>report/figures</code> to <code>report/output/figures</code>.</li>
 <li>Path of least resistance: run <code>mdweave</code> and <code>pandoc</code> from the <code>report</code> directory and also put the output in the same directory.</li>
 <li>And probably others.</li>
