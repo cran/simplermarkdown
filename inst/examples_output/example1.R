@@ -19,3 +19,14 @@ md_figure({
 plot(dta$Sepal.Length, dta$Petal.Length)
 }, name = "foo")
 
+# nooutput1
+a <- 1+1
+a
+
+# nooutput2
+a <- 1+1
+a
+
+# dontrun
+stop("Dit is een error")
+

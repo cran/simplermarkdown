@@ -2,24 +2,20 @@
 title: Title
 ---
 
-Header
-======
+# Header
 
 -   List item
 -   Another list item
 
 And some text with `inline code`.
 
-``` {#codeblock1 .R}
-> a <- 1 + 1
-
+``` {#codeblock1 .R additionalargument="42"}
+> a <- 1+1
 > b <- mean(a) + 10
-
-> c <- a + b
-
+> # Dit is commentaat
+> c <- a+b
 > c
 [1] 14
-
 > dta <- iris
 ```
 
@@ -56,8 +52,22 @@ The mean of `Sepal.Width` is 3.06. This is larger than 2.
 
     Geen R-code
 
-
 ![My figure](./figures/test.pdf)
 
 
 ![](./figures/foo.png)
+
+# Some regresion like tests
+
+Following should result in no code block.
+
+Following should result in an empty code block.
+
+``` {#nooutput2 .R}
+```
+
+Following code should not be run
+
+``` {#dontrun .R}
+stop("Dit is een error")
+```

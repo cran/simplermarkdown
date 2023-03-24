@@ -22,6 +22,11 @@
 #' is the temporary file with the modified parse tree and the second argument
 #' the output file.
 #'
+#' \code{cmd2} also has a third argument (\code{%3$s}) that contains a list of
+#' extensions that are enabled or disabled. This is because some extensions
+#' interfere with the conversion of the parsed tree to markdown. See
+#' \code{\link{get_extensions}} to see which extensions are disabled.
+#'
 #' @return
 #' Returns the file name of the file generated (\code{ofn}). Called mainly for the
 #' side effect of parsing and generating a markdown file (and possibly secondary
@@ -31,7 +36,7 @@
 #' 
 mdweave <- function(fn, ofn = file_subs_ext(basename(fn), ".md", FALSE), 
     cmd1 = 'pandoc -s "%1$s" -t json -o "%2$s"', 
-    cmd2 = 'pandoc -s "%1$s" -t markdown -o "%2$s"', ...) {
+    cmd2 = 'pandoc -s "%1$s" -t markdown%3$s -o "%2$s"', ...) {
   # Check if output filename does nog conflict with input filename
   if (ofn == fn) stop("Output file (ofn) would overwrite input file (fn). ", 
       "Specify another output filename (ofn).")
@@ -53,7 +58,8 @@ mdweave <- function(fn, ofn = file_subs_ext(basename(fn), ".md", FALSE),
   tmp_ifn <- tempfile(fileext = ".json")
   writeLines(rjson::toJSON(dta), tmp_ifn)
   # Convert json back to markdown
-  cmd2 <- sprintf(cmd2, tmp_ifn, ofn)
+  extensions <- get_extensions()
+  cmd2 <- sprintf(cmd2, tmp_ifn, ofn, extensions)
   run_cmd(cmd2, paste0("Failed to convert the processed JSON file back to ", 
     "markdown (cmd2). Either on of the output functions contains an error ",
     "or simplermarkdown has written invalid JSON. ",

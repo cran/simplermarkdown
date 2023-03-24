@@ -10,7 +10,7 @@ title: Title
 
 And some text with `inline code`.
 
-``` {#codeblock1 .R echo=TRUE results=TRUE}
+``` {#codeblock1 .R echo=TRUE results=TRUE additionalargument=42}
 a <- 1+1
 b <- mean(a) + 10
 # Dit is commentaat
@@ -48,3 +48,27 @@ md_figure({
 plot(dta$Sepal.Length, dta$Petal.Length)
 }, name = "foo")
 ```
+
+
+# Some regresion like tests
+
+Following should result in no code block.
+
+```{.R #nooutput1 results=FALSE echo=FALSE}
+a <- 1+1
+a
+```
+
+Following should result in an empty code block.
+
+```{.R #nooutput2 results=FALSE echo=FALSE drop_empty=FALSE}
+a <- 1+1
+a
+```
+
+Following code should not be run
+
+```{.R #dontrun eval=FALSE}
+stop("Dit is een error")
+```
+

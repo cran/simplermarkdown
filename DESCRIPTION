@@ -1,6 +1,6 @@
 Package: simplermarkdown
 Title: Simple Engine for Generating Reports using R
-Version: 0.0.4
+Version: 0.0.6
 Authors@R: 
     person(given = "Jan",
            family = "van der Laan",
@@ -16,15 +16,15 @@ BugReports: https://github.com/djvanderlaan/simplermarkdown/issues
 URL: https://github.com/djvanderlaan/simplermarkdown
 License: GPL (>= 3)
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Imports: rjson, tools
 Suggests: MASS
 VignetteBuilder: simplermarkdown
 SystemRequirements: Pandoc (http://pandoc.org) needs to installed and
         available in the search path.
 NeedsCompilation: no
-Packaged: 2022-01-03 19:59:17 UTC; eoos
+Packaged: 2023-03-24 07:55:56 UTC; eoos
 Author: Jan van der Laan [aut, cre] (<https://orcid.org/0000-0002-0693-1514>)
 Maintainer: Jan van der Laan <r@eoos.dds.nl>
 Repository: CRAN
-Date/Publication: 2022-01-03 20:20:02 UTC
+Date/Publication: 2023-03-24 15:00:02 UTC
